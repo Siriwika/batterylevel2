@@ -18,6 +18,8 @@ import android.util.Log;
 public class MainActivity extends FlutterActivity {
     private static final String CHANNEL = "samples.flutter.dev/battery";
     private static final String TAG = "MainActivity";
+
+
     // Access a Firestore instance from your Activity
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -30,26 +32,27 @@ public class MainActivity extends FlutterActivity {
                            db.collection("User")
                                     .get().addOnCompleteListener(task -> {
                                          if(task.isSuccessful()){
-
                                              if (task.getResult().isEmpty()) {
                                                  System.out.println("tasks is empty");
                                              }
                                              for (QueryDocumentSnapshot doc : task.getResult()){
                                                  Log.d(TAG, "configureFlutterEngine: "+doc);
                                                  Log.d(TAG, doc.getId()+ " => " +doc.getData());
+                                                 if (call.method.equals("getBatteryLevel")) {
+//                                List<String> dataList = new ArrayList<String>();
+                                                     Map<String, Object> user = new HashMap<>();
+                                                     user.put("name",doc.get("name").toString());
+                                                     Log.d(TAG, "configureFlutterEngine oooo: " +doc.get("name").toString() );
+                                                 //    user.put("tel",doc.getData("tel"));
+                                                     result.success(user);
+                                                 }
                                              }
                                          }else{
                                              Log.w(TAG, "Error getting documents.", task.getException());
                                          }
                                     });
                             // This method is invoked on the main thread.
-                            if (call.method.equals("getBatteryLevel")) {
-//                                List<String> dataList = new ArrayList<String>();
-                                Map<String, Object> user = new HashMap<>();
-                                user.put("name","Cake");
-                                user.put("age","22");
-                                result.success(user);
-                        }
+
                         }
                 );
     }
