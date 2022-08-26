@@ -1,6 +1,6 @@
 {
-    "name": "batterylevel",
-    "short_name": "batterylevel",
+    "name": "platformspecific",
+    "short_name": "platformspecific",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

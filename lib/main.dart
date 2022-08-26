@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 void main() {
@@ -30,33 +30,25 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class User{
-  User({
-    required  this.name,
-    required this.age
-});
+class User {
+  User({required this.name, required this.tel});
   String name;
-  int age;
-
+  String tel;
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  static const platform = MethodChannel('samples.flutter.dev/battery');
+  static const platform = MethodChannel('samples.flutter.dev/platforms');
+  late User _user = User(name: "", tel: "");
 
-// Get battery level.
-  late User _user =  User(name: "", age:0);
-
-  Future<void> _getBatteryLevel() async {
-
+  Future<void> _getUserData() async {
     try {
-      final result = await platform.invokeMethod('getBatteryLevel');
+      final result = await platform.invokeMethod('getUserData');
       _user.name = result['name'];
-      // print(result);
-      // print(result['age']);
+      // print(result['tel']);
       // print(result.runtimeType);
 
     } on PlatformException catch (e) {
-      _user.name = "Failed to get battery level: '${e.message}'.";
+      _user.name = "Failed to get user data: '${e.message}'.";
     }
 
     setState(() {
@@ -66,18 +58,29 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Center(
+    String username = _user.name.toString();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            ElevatedButton(
-              onPressed: _getBatteryLevel,
-              child: const Text('Get Name'),
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              'Get user data:',
             ),
-            Text(_user.name.toString()),
+            Text(
+              username,
+              style: Theme.of(context).textTheme.headline4,
+            ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _getUserData,
+        tooltip: 'search',
+        child: const Icon(Icons.search),
       ),
     );
   }
